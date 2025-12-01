@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from './api/auth.service';
 import { GoalsService } from './api/goals.service';
 import { GroupGoalsService } from './api/groupGoals.service';
+import { GroupUsersService } from './api/groupUsers.service';
 import { GroupsService } from './api/groups.service';
 import { TopicsService } from './api/topics.service';
 import { UsersService } from './api/users.service';
@@ -18,6 +19,7 @@ import { UsersService } from './api/users.service';
     AuthService,
     GoalsService,
     GroupGoalsService,
+    GroupUsersService,
     GroupsService,
     TopicsService,
     UsersService ]

@@ -17,14 +17,14 @@ import { CustomHttpUrlEncodingCodec }                        from '../encoder';
 
 import { Observable }                                        from 'rxjs';
 
-import { GroupGoals } from '../model/groupGoals';
+import { UserGroup } from '../model/userGroup';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
 
 
 @Injectable()
-export class GroupGoalsService {
+export class GroupUsersService {
 
     protected basePath = 'http://localhost:8000/api/v1';
     public defaultHeaders = new HttpHeaders();
@@ -62,13 +62,13 @@ export class GroupGoalsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public groupGoalsCreate(body: GroupGoals, observe?: 'body', reportProgress?: boolean): Observable<GroupGoals>;
-    public groupGoalsCreate(body: GroupGoals, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<GroupGoals>>;
-    public groupGoalsCreate(body: GroupGoals, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<GroupGoals>>;
-    public groupGoalsCreate(body: GroupGoals, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public groupUsersCreate(body: UserGroup, observe?: 'body', reportProgress?: boolean): Observable<UserGroup>;
+    public groupUsersCreate(body: UserGroup, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<UserGroup>>;
+    public groupUsersCreate(body: UserGroup, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<UserGroup>>;
+    public groupUsersCreate(body: UserGroup, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (body === null || body === undefined) {
-            throw new Error('Required parameter body was null or undefined when calling groupGoalsCreate.');
+            throw new Error('Required parameter body was null or undefined when calling groupUsersCreate.');
         }
 
         let headers = this.defaultHeaders;
@@ -96,7 +96,7 @@ export class GroupGoalsService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<GroupGoals>('post',`${this.basePath}/group-goals/`,
+        return this.httpClient.request<UserGroup>('post',`${this.basePath}/group-users/`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,
@@ -110,17 +110,17 @@ export class GroupGoalsService {
     /**
      * 
      * 
-     * @param id A unique integer value identifying this group goal.
+     * @param id A unique integer value identifying this user group.
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public groupGoalsDelete(id: number, observe?: 'body', reportProgress?: boolean): Observable<any>;
-    public groupGoalsDelete(id: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
-    public groupGoalsDelete(id: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
-    public groupGoalsDelete(id: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public groupUsersDelete(id: number, observe?: 'body', reportProgress?: boolean): Observable<any>;
+    public groupUsersDelete(id: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
+    public groupUsersDelete(id: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
+    public groupUsersDelete(id: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling groupGoalsDelete.');
+            throw new Error('Required parameter id was null or undefined when calling groupUsersDelete.');
         }
 
         let headers = this.defaultHeaders;
@@ -142,7 +142,7 @@ export class GroupGoalsService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<any>('delete',`${this.basePath}/group-goals/${encodeURIComponent(String(id))}/`,
+        return this.httpClient.request<any>('delete',`${this.basePath}/group-users/${encodeURIComponent(String(id))}/`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
@@ -158,10 +158,10 @@ export class GroupGoalsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public groupGoalsList(observe?: 'body', reportProgress?: boolean): Observable<Array<GroupGoals>>;
-    public groupGoalsList(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<GroupGoals>>>;
-    public groupGoalsList(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<GroupGoals>>>;
-    public groupGoalsList(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public groupUsersList(observe?: 'body', reportProgress?: boolean): Observable<Array<UserGroup>>;
+    public groupUsersList(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<UserGroup>>>;
+    public groupUsersList(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<UserGroup>>>;
+    public groupUsersList(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         let headers = this.defaultHeaders;
 
@@ -183,7 +183,7 @@ export class GroupGoalsService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<Array<GroupGoals>>('get',`${this.basePath}/group-goals/`,
+        return this.httpClient.request<Array<UserGroup>>('get',`${this.basePath}/group-users/`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
@@ -197,21 +197,21 @@ export class GroupGoalsService {
      * 
      * 
      * @param body 
-     * @param id A unique integer value identifying this group goal.
+     * @param id A unique integer value identifying this user group.
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public groupGoalsPartialUpdate(body: GroupGoals, id: number, observe?: 'body', reportProgress?: boolean): Observable<GroupGoals>;
-    public groupGoalsPartialUpdate(body: GroupGoals, id: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<GroupGoals>>;
-    public groupGoalsPartialUpdate(body: GroupGoals, id: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<GroupGoals>>;
-    public groupGoalsPartialUpdate(body: GroupGoals, id: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public groupUsersPartialUpdate(body: UserGroup, id: number, observe?: 'body', reportProgress?: boolean): Observable<UserGroup>;
+    public groupUsersPartialUpdate(body: UserGroup, id: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<UserGroup>>;
+    public groupUsersPartialUpdate(body: UserGroup, id: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<UserGroup>>;
+    public groupUsersPartialUpdate(body: UserGroup, id: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (body === null || body === undefined) {
-            throw new Error('Required parameter body was null or undefined when calling groupGoalsPartialUpdate.');
+            throw new Error('Required parameter body was null or undefined when calling groupUsersPartialUpdate.');
         }
 
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling groupGoalsPartialUpdate.');
+            throw new Error('Required parameter id was null or undefined when calling groupUsersPartialUpdate.');
         }
 
         let headers = this.defaultHeaders;
@@ -239,7 +239,7 @@ export class GroupGoalsService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<GroupGoals>('patch',`${this.basePath}/group-goals/${encodeURIComponent(String(id))}/`,
+        return this.httpClient.request<UserGroup>('patch',`${this.basePath}/group-users/${encodeURIComponent(String(id))}/`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,
@@ -253,17 +253,17 @@ export class GroupGoalsService {
     /**
      * 
      * 
-     * @param id A unique integer value identifying this group goal.
+     * @param id A unique integer value identifying this user group.
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public groupGoalsRead(id: number, observe?: 'body', reportProgress?: boolean): Observable<GroupGoals>;
-    public groupGoalsRead(id: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<GroupGoals>>;
-    public groupGoalsRead(id: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<GroupGoals>>;
-    public groupGoalsRead(id: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public groupUsersRead(id: number, observe?: 'body', reportProgress?: boolean): Observable<UserGroup>;
+    public groupUsersRead(id: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<UserGroup>>;
+    public groupUsersRead(id: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<UserGroup>>;
+    public groupUsersRead(id: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling groupGoalsRead.');
+            throw new Error('Required parameter id was null or undefined when calling groupUsersRead.');
         }
 
         let headers = this.defaultHeaders;
@@ -286,7 +286,7 @@ export class GroupGoalsService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<GroupGoals>('get',`${this.basePath}/group-goals/${encodeURIComponent(String(id))}/`,
+        return this.httpClient.request<UserGroup>('get',`${this.basePath}/group-users/${encodeURIComponent(String(id))}/`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
@@ -300,21 +300,21 @@ export class GroupGoalsService {
      * 
      * 
      * @param body 
-     * @param id A unique integer value identifying this group goal.
+     * @param id A unique integer value identifying this user group.
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public groupGoalsUpdate(body: GroupGoals, id: number, observe?: 'body', reportProgress?: boolean): Observable<GroupGoals>;
-    public groupGoalsUpdate(body: GroupGoals, id: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<GroupGoals>>;
-    public groupGoalsUpdate(body: GroupGoals, id: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<GroupGoals>>;
-    public groupGoalsUpdate(body: GroupGoals, id: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public groupUsersUpdate(body: UserGroup, id: number, observe?: 'body', reportProgress?: boolean): Observable<UserGroup>;
+    public groupUsersUpdate(body: UserGroup, id: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<UserGroup>>;
+    public groupUsersUpdate(body: UserGroup, id: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<UserGroup>>;
+    public groupUsersUpdate(body: UserGroup, id: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (body === null || body === undefined) {
-            throw new Error('Required parameter body was null or undefined when calling groupGoalsUpdate.');
+            throw new Error('Required parameter body was null or undefined when calling groupUsersUpdate.');
         }
 
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling groupGoalsUpdate.');
+            throw new Error('Required parameter id was null or undefined when calling groupUsersUpdate.');
         }
 
         let headers = this.defaultHeaders;
@@ -342,7 +342,7 @@ export class GroupGoalsService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<GroupGoals>('put',`${this.basePath}/group-goals/${encodeURIComponent(String(id))}/`,
+        return this.httpClient.request<UserGroup>('put',`${this.basePath}/group-users/${encodeURIComponent(String(id))}/`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,

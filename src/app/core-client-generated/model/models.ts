@@ -1,6 +1,6 @@
 export * from './goal';
-export * from './group';
 export * from './groupGoals';
+export * from './groupProject';
 export * from './login';
 export * from './passwordChange';
 export * from './passwordReset';
@@ -8,5 +8,6 @@ export * from './passwordResetConfirm';
 export * from './resendEmailVerification';
 export * from './topic';
 export * from './user';
+export * from './userGroup';
 export * from './userRegister';
 export * from './verifyEmail';

@@ -10,14 +10,8 @@
  * Do not edit the class manually.
  */
 
-export interface User { 
+export interface UserGroup { 
     readonly id?: number;
-    /**
-     * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-     */
-    username: string;
-    email?: string;
-    firstName?: string;
-    lastName?: string;
-    matricola: string;
+    group: number;
+    user: number;
 }

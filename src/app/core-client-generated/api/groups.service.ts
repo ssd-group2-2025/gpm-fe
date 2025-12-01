@@ -17,7 +17,7 @@ import { CustomHttpUrlEncodingCodec }                        from '../encoder';
 
 import { Observable }                                        from 'rxjs';
 
-import { Group } from '../model/group';
+import { GroupProject } from '../model/groupProject';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
@@ -62,10 +62,10 @@ export class GroupsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public groupsCreate(body: Group, observe?: 'body', reportProgress?: boolean): Observable<Group>;
-    public groupsCreate(body: Group, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Group>>;
-    public groupsCreate(body: Group, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Group>>;
-    public groupsCreate(body: Group, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public groupsCreate(body: GroupProject, observe?: 'body', reportProgress?: boolean): Observable<GroupProject>;
+    public groupsCreate(body: GroupProject, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<GroupProject>>;
+    public groupsCreate(body: GroupProject, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<GroupProject>>;
+    public groupsCreate(body: GroupProject, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (body === null || body === undefined) {
             throw new Error('Required parameter body was null or undefined when calling groupsCreate.');
@@ -96,7 +96,7 @@ export class GroupsService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<Group>('post',`${this.basePath}/groups/`,
+        return this.httpClient.request<GroupProject>('post',`${this.basePath}/groups/`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,
@@ -110,7 +110,7 @@ export class GroupsService {
     /**
      * 
      * 
-     * @param id A unique integer value identifying this group.
+     * @param id A unique integer value identifying this group project.
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -156,14 +156,14 @@ export class GroupsService {
      * 
      * Permetti a un utente di unirsi a un gruppo
      * @param body 
-     * @param id A unique integer value identifying this group.
+     * @param id A unique integer value identifying this group project.
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public groupsJoin(body: Group, id: number, observe?: 'body', reportProgress?: boolean): Observable<Group>;
-    public groupsJoin(body: Group, id: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Group>>;
-    public groupsJoin(body: Group, id: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Group>>;
-    public groupsJoin(body: Group, id: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public groupsJoin(body: GroupProject, id: number, observe?: 'body', reportProgress?: boolean): Observable<GroupProject>;
+    public groupsJoin(body: GroupProject, id: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<GroupProject>>;
+    public groupsJoin(body: GroupProject, id: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<GroupProject>>;
+    public groupsJoin(body: GroupProject, id: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (body === null || body === undefined) {
             throw new Error('Required parameter body was null or undefined when calling groupsJoin.');
@@ -198,7 +198,7 @@ export class GroupsService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<Group>('post',`${this.basePath}/groups/${encodeURIComponent(String(id))}/join/`,
+        return this.httpClient.request<GroupProject>('post',`${this.basePath}/groups/${encodeURIComponent(String(id))}/join/`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,
@@ -215,9 +215,9 @@ export class GroupsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public groupsList(observe?: 'body', reportProgress?: boolean): Observable<Array<Group>>;
-    public groupsList(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<Group>>>;
-    public groupsList(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<Group>>>;
+    public groupsList(observe?: 'body', reportProgress?: boolean): Observable<Array<GroupProject>>;
+    public groupsList(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<GroupProject>>>;
+    public groupsList(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<GroupProject>>>;
     public groupsList(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         let headers = this.defaultHeaders;
@@ -240,7 +240,7 @@ export class GroupsService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<Array<Group>>('get',`${this.basePath}/groups/`,
+        return this.httpClient.request<Array<GroupProject>>('get',`${this.basePath}/groups/`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
@@ -254,14 +254,14 @@ export class GroupsService {
      * 
      * 
      * @param body 
-     * @param id A unique integer value identifying this group.
+     * @param id A unique integer value identifying this group project.
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public groupsPartialUpdate(body: Group, id: number, observe?: 'body', reportProgress?: boolean): Observable<Group>;
-    public groupsPartialUpdate(body: Group, id: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Group>>;
-    public groupsPartialUpdate(body: Group, id: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Group>>;
-    public groupsPartialUpdate(body: Group, id: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public groupsPartialUpdate(body: GroupProject, id: number, observe?: 'body', reportProgress?: boolean): Observable<GroupProject>;
+    public groupsPartialUpdate(body: GroupProject, id: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<GroupProject>>;
+    public groupsPartialUpdate(body: GroupProject, id: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<GroupProject>>;
+    public groupsPartialUpdate(body: GroupProject, id: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (body === null || body === undefined) {
             throw new Error('Required parameter body was null or undefined when calling groupsPartialUpdate.');
@@ -296,7 +296,7 @@ export class GroupsService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<Group>('patch',`${this.basePath}/groups/${encodeURIComponent(String(id))}/`,
+        return this.httpClient.request<GroupProject>('patch',`${this.basePath}/groups/${encodeURIComponent(String(id))}/`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,
@@ -310,13 +310,13 @@ export class GroupsService {
     /**
      * 
      * 
-     * @param id A unique integer value identifying this group.
+     * @param id A unique integer value identifying this group project.
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public groupsRead(id: number, observe?: 'body', reportProgress?: boolean): Observable<Group>;
-    public groupsRead(id: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Group>>;
-    public groupsRead(id: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Group>>;
+    public groupsRead(id: number, observe?: 'body', reportProgress?: boolean): Observable<GroupProject>;
+    public groupsRead(id: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<GroupProject>>;
+    public groupsRead(id: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<GroupProject>>;
     public groupsRead(id: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (id === null || id === undefined) {
@@ -343,7 +343,7 @@ export class GroupsService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<Group>('get',`${this.basePath}/groups/${encodeURIComponent(String(id))}/`,
+        return this.httpClient.request<GroupProject>('get',`${this.basePath}/groups/${encodeURIComponent(String(id))}/`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
@@ -357,14 +357,14 @@ export class GroupsService {
      * 
      * 
      * @param body 
-     * @param id A unique integer value identifying this group.
+     * @param id A unique integer value identifying this group project.
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public groupsUpdate(body: Group, id: number, observe?: 'body', reportProgress?: boolean): Observable<Group>;
-    public groupsUpdate(body: Group, id: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Group>>;
-    public groupsUpdate(body: Group, id: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Group>>;
-    public groupsUpdate(body: Group, id: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public groupsUpdate(body: GroupProject, id: number, observe?: 'body', reportProgress?: boolean): Observable<GroupProject>;
+    public groupsUpdate(body: GroupProject, id: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<GroupProject>>;
+    public groupsUpdate(body: GroupProject, id: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<GroupProject>>;
+    public groupsUpdate(body: GroupProject, id: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (body === null || body === undefined) {
             throw new Error('Required parameter body was null or undefined when calling groupsUpdate.');
@@ -399,7 +399,7 @@ export class GroupsService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<Group>('put',`${this.basePath}/groups/${encodeURIComponent(String(id))}/`,
+        return this.httpClient.request<GroupProject>('put',`${this.basePath}/groups/${encodeURIComponent(String(id))}/`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,

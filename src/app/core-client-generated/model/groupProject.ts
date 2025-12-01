@@ -10,14 +10,11 @@
  * Do not edit the class manually.
  */
 
-export interface User { 
+export interface GroupProject { 
     readonly id?: number;
-    /**
-     * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-     */
-    username: string;
-    email?: string;
-    firstName?: string;
-    lastName?: string;
-    matricola: string;
+    name: string;
+    linkDjango: string;
+    linkTui: string;
+    linkGui: string;
+    topic: number;
 }
