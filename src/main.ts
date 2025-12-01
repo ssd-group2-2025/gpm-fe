@@ -7,6 +7,7 @@ import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
 import { csrfInterceptor } from './app/interceptors/csrf.interceptor';
 import { jwtInterceptor } from './app/interceptors/jwt.interceptor';
+import { caseConverterInterceptor } from './app/interceptors/case-converter.interceptor';
 import { AuthService } from './app/core-client-generated/api/auth.service';
 import { UsersService } from './app/core-client-generated/api/users.service';
 import { GroupsService } from './app/core-client-generated/api/groups.service';
@@ -29,7 +30,7 @@ function initializeCsrf(http: HttpClient) {
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
-    provideHttpClient(withInterceptors([jwtInterceptor, csrfInterceptor])),
+    provideHttpClient(withInterceptors([jwtInterceptor, csrfInterceptor, caseConverterInterceptor])),
     {
       provide: Configuration,
       useValue: new Configuration({

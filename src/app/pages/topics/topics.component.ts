@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import Swal from 'sweetalert2';
 import { TopicsService } from '../../core-client-generated/api/topics.service';
 import { Topic } from '../../core-client-generated/model/models';
 
@@ -95,11 +96,28 @@ export class TopicsComponent implements OnInit {
   }
 
   deleteTopic(id: number): void {
-    if (confirm('Are you sure you want to delete this topic? This action cannot be undone.')) {
-      this.topicsService.topicsDelete(id).subscribe({
-        next: () => this.loadTopics(),
-        error: (error) => console.error('Error deleting topic:', error)
-      });
-    }
+    Swal.fire({
+      title: 'Delete Topic?',
+      text: 'This action cannot be undone!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.topicsService.topicsDelete(id).subscribe({
+          next: () => {
+            Swal.fire('Deleted!', 'The topic has been deleted.', 'success');
+            this.loadTopics();
+          },
+          error: (error) => {
+            console.error('Error deleting topic:', error);
+            Swal.fire('Error', 'Failed to delete the topic.', 'error');
+          }
+        });
+      }
+    });
   }
 }

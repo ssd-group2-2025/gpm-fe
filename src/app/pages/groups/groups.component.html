@@ -71,12 +71,12 @@
             }
           </div>
 
-          @if (!group.isMyGroup && !authService.isAdmin) {
+          @if (!group.isMyGroup) {
             <button (click)="joinGroup(group)" class="btn-join">
               Join Group
             </button>
           }
-          @if (group.isMyGroup && !authService.isAdmin) {
+          @if (group.isMyGroup) {
             <button (click)="leaveGroup(group)" class="btn-leave">
               Leave Group
             </button>

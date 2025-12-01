@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import Swal from 'sweetalert2';
 import { GroupsService } from '../../core-client-generated/api/groups.service';
 import { GroupUsersService } from '../../core-client-generated/api/groupUsers.service';
 import { TopicsService } from '../../core-client-generated/api/topics.service';
@@ -9,7 +10,14 @@ import { UsersService } from '../../core-client-generated/api/users.service';
 import { Group, Topic, User, UserGroup } from '../../core-client-generated/model/models';
 import { forkJoin } from 'rxjs';
 
-interface GroupView extends Group {
+interface GroupView {
+  id?: number;
+  name: string;
+  linkDjango: string;
+  linkTui: string;
+  linkGui: string;
+  topic: number;
+  members: number[];
   topicTitle?: string;
   memberNames?: string[];
   isMyGroup?: boolean;
@@ -65,11 +73,14 @@ export class GroupsComponent implements OnInit {
         this.users.set(users);
 
         const currentUserId = this.authService.currentUser()?.id;
+        const currentUserIdNum = currentUserId ? Number(currentUserId) : undefined;
 
         const enriched: GroupView[] = groups.map(group => {
           const groupMembers = userGroups
             .filter(ug => ug.group === group.id)
             .map(ug => ug.user);
+
+          const isMyGroup = currentUserIdNum ? groupMembers.includes(currentUserIdNum) : false;
 
           return {
             ...group,
@@ -78,8 +89,8 @@ export class GroupsComponent implements OnInit {
             memberNames: groupMembers.map(memberId =>
               users.find(u => u.id === memberId)?.username || 'Unknown'
             ),
-            isMyGroup: currentUserId ? groupMembers.includes(currentUserId) : false,
-            canEdit: this.authService.isAdmin() || (currentUserId ? groupMembers.includes(currentUserId) : false)
+            isMyGroup,
+            canEdit: this.authService.isAdmin() || (currentUserIdNum ? groupMembers.includes(currentUserIdNum) : false)
           };
         });
 
@@ -227,49 +238,70 @@ export class GroupsComponent implements OnInit {
   }
 
   joinGroup(group: Group): void {
-    const currentUserId = this.authService.currentUser()?.id;
-    if (!currentUserId) return;
+    if (!group.id) return;
 
-    const userGroup: UserGroup = {
-      group: group.id!,
-      user: currentUserId
-    };
-
-    this.groupUsersService.groupUsersCreate(userGroup).subscribe({
-      next: () => this.loadData(),
+    this.groupsService.groupsJoin(group, group.id).subscribe({
+      next: () => {
+        console.log('Join successful, reloading data...');
+        // Ricarica i dati per aggiornare lo stato isMyGroup
+        setTimeout(() => this.loadData(), 200);
+      },
       error: (error) => console.error('Error joining group:', error)
     });
   }
 
   leaveGroup(group: Group): void {
-    const currentUserId = this.authService.currentUser()?.id;
-    if (!currentUserId) return;
+    if (!group.id) return;
 
-    if (confirm('Are you sure you want to leave this group?')) {
-      this.groupUsersService.groupUsersList().subscribe({
-        next: (userGroups) => {
-          const userGroupRelation = userGroups.find(
-            ug => ug.group === group.id && ug.user === currentUserId
-          );
-
-          if (userGroupRelation?.id) {
-            this.groupUsersService.groupUsersDelete(userGroupRelation.id).subscribe({
-              next: () => this.loadData(),
-              error: (error) => console.error('Error leaving group:', error)
-            });
+    Swal.fire({
+      title: 'Leave Group?',
+      text: 'Are you sure you want to leave this group?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, leave',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.groupsService.groupsLeave(group.id!).subscribe({
+          next: () => {
+            Swal.fire('Left!', 'You have left the group.', 'success');
+            console.log('Leave successful, reloading data...');
+            setTimeout(() => this.loadData(), 200);
+          },
+          error: (error) => {
+            console.error('Error leaving group:', error);
+            Swal.fire('Error', 'Failed to leave the group.', 'error');
           }
-        },
-        error: (error) => console.error('Error fetching user groups:', error)
-      });
-    }
+        });
+      }
+    });
   }
 
   deleteGroup(id: number): void {
-    if (confirm('Are you sure you want to delete this group? This action cannot be undone.')) {
-      this.groupsService.groupsDelete(id).subscribe({
-        next: () => this.loadData(),
-        error: (error) => console.error('Error deleting group:', error)
-      });
-    }
+    Swal.fire({
+      title: 'Delete Group?',
+      text: 'This action cannot be undone!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.groupsService.groupsDelete(id).subscribe({
+          next: () => {
+            Swal.fire('Deleted!', 'The group has been deleted.', 'success');
+            this.loadData();
+          },
+          error: (error) => {
+            console.error('Error deleting group:', error);
+            Swal.fire('Error', 'Failed to delete the group.', 'error');
+          }
+        });
+      }
+    });
   }
 }

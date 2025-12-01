@@ -15,7 +15,14 @@ interface DashboardStats {
   completedGoals: number;
 }
 
-interface GroupWithDetails extends Group {
+interface GroupWithDetails {
+  id?: number;
+  name: string;
+  linkDjango: string;
+  linkTui: string;
+  linkGui: string;
+  topic: number;
+  members: number[];
   memberCount: number;
   completedGoals: number;
   totalGoals: number;
