@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --proxy-config proxy.conf.json",
     "build": "ng build",
     "generate-core-api-client": "swagger-nodegen-cli generate -i http://localhost:8000/api/docs/ -o src/app/core-client-generated -l typescript-angular --additional-properties ngVersion=17.2.0"
   },

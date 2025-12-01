@@ -20,8 +20,6 @@ import { firstValueFrom } from 'rxjs';
 
 function initializeCsrf(http: HttpClient) {
   return () => {
-    // Non blocchiamo l'avvio dell'app - il CSRF verrà gestito dall'interceptor
-    // Django invierà il cookie csrftoken al primo contatto
     console.log('CSRF initialization - cookie will be set on first request');
     return Promise.resolve();
   };
@@ -34,7 +32,7 @@ bootstrapApplication(AppComponent, {
     {
       provide: Configuration,
       useValue: new Configuration({
-        basePath: 'http://localhost:8000/api/v1',
+        basePath: '/api/v1',
         withCredentials: true
       })
     },
