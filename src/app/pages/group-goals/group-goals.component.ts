@@ -31,7 +31,7 @@ export class GroupGoalsComponent implements OnInit {
   loading = signal(true);
   saving = signal(false);
   groupGoalsView = signal<GroupGoalView[]>([]);
-  groups = signal<Group[]>([]);
+  groups = signal<any[]>([]);
   goals = signal<Goal[]>([]);
   showModal = signal(false);
 

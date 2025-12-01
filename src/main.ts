@@ -6,9 +6,11 @@ import { APP_INITIALIZER } from '@angular/core';
 import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
 import { csrfInterceptor } from './app/interceptors/csrf.interceptor';
+import { jwtInterceptor } from './app/interceptors/jwt.interceptor';
 import { AuthService } from './app/core-client-generated/api/auth.service';
 import { UsersService } from './app/core-client-generated/api/users.service';
 import { GroupsService } from './app/core-client-generated/api/groups.service';
+import { GroupUsersService } from './app/core-client-generated/api/groupUsers.service';
 import { GoalsService } from './app/core-client-generated/api/goals.service';
 import { TopicsService } from './app/core-client-generated/api/topics.service';
 import { GroupGoalsService } from './app/core-client-generated/api/groupGoals.service';
@@ -27,7 +29,7 @@ function initializeCsrf(http: HttpClient) {
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
-    provideHttpClient(withInterceptors([csrfInterceptor])),
+    provideHttpClient(withInterceptors([jwtInterceptor, csrfInterceptor])),
     {
       provide: Configuration,
       useValue: new Configuration({
@@ -44,6 +46,7 @@ bootstrapApplication(AppComponent, {
     AuthService,
     UsersService,
     GroupsService,
+    GroupUsersService,
     GoalsService,
     TopicsService,
     GroupGoalsService

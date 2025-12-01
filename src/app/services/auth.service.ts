@@ -1,129 +1,82 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService as ApiAuthService } from '../core-client-generated/api/auth.service';
-import { UsersService } from '../core-client-generated/api/users.service';
-import { User, Login } from '../core-client-generated/model/models';
-import { catchError, tap, of, BehaviorSubject, Observable, map, switchMap } from 'rxjs';
-
-export interface AuthState {
-  user: User | null;
-  isAuthenticated: boolean;
-  isAdmin: boolean;
-}
+import { CustomTokenObtainPair } from '../core-client-generated/model/models';
+import { catchError, tap, of, Observable, map } from 'rxjs';
+import { ExtendedUser } from '../models/extended-user.model';
+import { JwtResponse, JwtPayload, decodeJwt } from '../models/jwt-response.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private apiAuthService = inject(ApiAuthService);
-  private usersService = inject(UsersService);
   private router = inject(Router);
 
-  private authState = new BehaviorSubject<AuthState>({
-    user: null,
-    isAuthenticated: false,
-    isAdmin: false
+  private jwtPayloadSignal = signal<JwtPayload | null>(null);
+
+  currentUser = computed(() => {
+    const jwt = this.jwtPayloadSignal();
+    if (!jwt) return null;
+
+    return {
+      id: jwt.user_id,
+      username: jwt.username,
+      email: jwt.email,
+      firstName: jwt.first_name,
+      lastName: jwt.last_name,
+      matricola: jwt.matricola,
+      is_staff: jwt.is_staff,
+      is_superuser: jwt.is_superuser,
+      isStaff: jwt.is_staff,
+      isSuperuser: jwt.is_superuser
+    } as ExtendedUser;
+  });
+  isAuthenticated = computed(() => this.jwtPayloadSignal() !== null);
+  isAdmin = computed(() => {
+    const jwt = this.jwtPayloadSignal();
+    return jwt?.is_superuser || false;
+  });
+  isStaff = computed(() => {
+    const jwt = this.jwtPayloadSignal();
+    return jwt?.is_staff || false;
+  });
+  userGroup = computed(() => {
+    const user = this.currentUser();
+    return user?.group;
   });
 
-  authState$ = this.authState.asObservable();
-
-  get currentUser(): User | null {
-    return this.authState.value.user;
-  }
-
-  get isAuthenticated(): boolean {
-    return this.authState.value.isAuthenticated;
-  }
-
-  get isAdmin(): boolean {
-    return this.authState.value.isAdmin;
-  }
-
-  get userGroup(): number | undefined {
-    return this.authState.value.user?.group;
-  }
-
   constructor() {
-    this.loadUserFromStorage();
+    this.loadAuthFromStorage();
   }
 
-  login(credentials: Login): Observable<User | null> {
+  login(credentials: CustomTokenObtainPair): Observable<ExtendedUser | null> {
     return this.apiAuthService.authLoginCreate(credentials).pipe(
-      switchMap(() => this.usersService.usersMe()),
       map((response: any) => {
-        // Il backend potrebbe restituire un oggetto User diretto o un array
-        console.log('Raw response from usersMe():', response);
-        let user: User | null = null;
-        
-        if (Array.isArray(response)) {
-          user = response.length > 0 ? response[0] : null;
-        } else if (response && typeof response === 'object') {
-          // Il backend restituisce un oggetto diretto
-          user = response as User;
+        const jwtResponse = response as JwtResponse;
+
+        if (jwtResponse.access) {
+          this.saveAccessToken(jwtResponse.access);
+
+          const payload = decodeJwt(jwtResponse.access);
+          if (payload) {
+            this.jwtPayloadSignal.set(payload);
+            return this.currentUser();
+          }
         }
-        
-        console.log('User fetched after login:', user);
-        return user;
-      }),
-      tap(user => {
-        if (user) {
-          // Handle both camelCase and snake_case from backend
-          const isAdmin = user.isSuperuser || (user as any).is_superuser || false;
-          console.log('Updating auth state - user:', user.username, 'isAdmin:', isAdmin, 'isSuperuser:', user.isSuperuser, 'is_superuser:', (user as any).is_superuser);
-          this.authState.next({
-            user: user,
-            isAuthenticated: true,
-            isAdmin
-          });
-          this.saveUserToStorage(user);
-          console.log('Auth state updated:', this.authState.value);
-        } else {
-          console.error('No user returned from usersMe()');
-          this.clearAuth();
-        }
+
+        throw new Error('Invalid JWT response');
       }),
       catchError(error => {
-        console.error('Login or user fetch failed:', error);
+        console.error('Login failed:', error);
         this.clearAuth();
         throw error;
       })
     );
   }
 
-  getCurrentUser(): void {
-    this.usersService.usersMe().pipe(
-      map((response: any) => {
-        // Il backend potrebbe restituire un oggetto User diretto o un array
-        if (Array.isArray(response)) {
-          return response.length > 0 ? response[0] : null;
-        } else if (response && typeof response === 'object') {
-          return response as User;
-        }
-        return null;
-      }),
-      tap(user => {
-        // Handle both camelCase and snake_case from backend
-        const isAdmin = user?.isSuperuser || (user as any)?.is_superuser || false;
-        console.log('getCurrentUser - isAdmin:', isAdmin, 'isSuperuser:', user?.isSuperuser, 'is_superuser:', (user as any)?.is_superuser);
-        this.authState.next({
-          user: user || null,
-          isAuthenticated: !!user,
-          isAdmin
-        });
-        if (user) {
-          this.saveUserToStorage(user);
-        }
-      }),
-      catchError(error => {
-        console.error('Failed to get current user:', error);
-        this.clearAuth();
-        return of(null);
-      })
-    ).subscribe();
-  }
-
   logout(): void {
-    this.apiAuthService.authLogoutCreate().pipe(
+    this.apiAuthService.authLogoutLogoutCreate().pipe(
       tap(() => {
         this.clearAuth();
         this.router.navigate(['/login']);
@@ -137,40 +90,37 @@ export class AuthService {
     ).subscribe();
   }
 
+  getAccessToken(): string | null {
+    return localStorage.getItem('access_token');
+  }
+
   canEditGroup(groupId: number): boolean {
-    if (this.isAdmin) return true;
-    return this.userGroup === groupId;
+    if (this.isAdmin()) return true;
+    return this.userGroup() === groupId;
   }
 
-  private saveUserToStorage(user: User): void {
-    localStorage.setItem('user', JSON.stringify(user));
+  private saveAccessToken(token: string): void {
+    localStorage.setItem('access_token', token);
   }
 
-  private loadUserFromStorage(): void {
-    const userStr = localStorage.getItem('user');
-    if (userStr) {
-      try {
-        const user = JSON.parse(userStr);
-        // Handle both camelCase and snake_case from backend
-        const isAdmin = user?.isSuperuser || user?.is_superuser || false;
-        console.log('loadUserFromStorage - isAdmin:', isAdmin, 'isSuperuser:', user?.isSuperuser, 'is_superuser:', user?.is_superuser);
-        this.authState.next({
-          user,
-          isAuthenticated: true,
-          isAdmin
-        });
-      } catch (e) {
-        this.clearAuth();
+  private loadAuthFromStorage(): void {
+    const token = localStorage.getItem('access_token');
+
+    if (token) {
+      const payload = decodeJwt(token);
+      if (payload) {
+        const now = Math.floor(Date.now() / 1000);
+        if (payload.exp > now) {
+          this.jwtPayloadSignal.set(payload);
+        } else {
+          this.clearAuth();
+        }
       }
     }
   }
 
   private clearAuth(): void {
-    this.authState.next({
-      user: null,
-      isAuthenticated: false,
-      isAdmin: false
-    });
-    localStorage.removeItem('user');
+    this.jwtPayloadSignal.set(null);
+    localStorage.removeItem('access_token');
   }
 }

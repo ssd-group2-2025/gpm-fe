@@ -6,8 +6,8 @@ export const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  const isAuth = authService.isAuthenticated;
-  console.log('Auth Guard check:', { isAuthenticated: isAuth, url: state.url, user: authService.currentUser?.username });
+  const isAuth = authService.isAuthenticated();
+  console.log('Auth Guard check:', { isAuthenticated: isAuth, url: state.url, user: authService.currentUser()?.username });
 
   if (!isAuth) {
     console.warn('Access denied - redirecting to login');

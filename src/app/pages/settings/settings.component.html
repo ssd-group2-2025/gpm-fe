@@ -5,30 +5,30 @@
     <div class="info-grid">
       <div class="info-item">
         <label>Username:</label>
-        <span>{{ authService.currentUser?.username }}</span>
+        <span>{{ authService.currentUser()?.username }}</span>
       </div>
       <div class="info-item">
         <label>Email:</label>
-        <span>{{ authService.currentUser?.email }}</span>
+        <span>{{ authService.currentUser()?.email }}</span>
       </div>
-      @if (!authService.isAdmin) {
+      @if (!authService.isAdmin()) {
         <div class="info-item">
           <label>First Name:</label>
-          <span>{{ getFirstName() }}</span>
+          <span>{{ authService.currentUser()?.firstName }}</span>
         </div>
         <div class="info-item">
           <label>Last Name:</label>
-          <span>{{ getLastName() }}</span>
+          <span>{{ authService.currentUser()?.lastName }}</span>
         </div>
         <div class="info-item">
           <label>Matricola:</label>
-          <span>{{ authService.currentUser?.matricola }}</span>
+          <span>{{ authService.currentUser()?.matricola }}</span>
         </div>
       }
       <div class="info-item">
         <label>Role:</label>
-        <span class="badge" [class.admin]="authService.isAdmin">
-          {{ authService.isAdmin ? 'Admin' : 'Student' }}
+        <span class="badge" [class.admin]="authService.isAdmin()">
+          {{ authService.isAdmin() ? 'Admin' : 'Student' }}
         </span>
       </div>
     </div>

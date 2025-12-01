@@ -3,7 +3,7 @@
     <div class="header-content">
       <div class="header-text">
         <h1>Groups</h1>
-        <p>{{ authService.isAdmin ? 'Manage all groups' : 'Manage your groups and join others' }}</p>
+        <p>{{ authService.isAdmin() ? 'Manage all groups' : 'Manage your groups and join others' }}</p>
       </div>
       <button (click)="showCreateModal()" class="btn-primary">
         <i class="fas fa-plus"></i>
@@ -31,7 +31,7 @@
                 <button (click)="editGroup(group)" class="btn-icon-action edit">
                   <i class="fas fa-edit"></i>
                 </button>
-                @if (authService.isAdmin) {
+                @if (authService.isAdmin()) {
                   <button (click)="deleteGroup(group.id!)" class="btn-icon-action delete">
                     <i class="fas fa-trash"></i>
                   </button>
@@ -137,7 +137,7 @@
             <input formControlName="linkGui" placeholder="https://github.com/..." />
           </div>
 
-          @if (authService.isAdmin) {
+          @if (authService.isAdmin()) {
             <div class="form-group">
               <label>Members</label>
               <select formControlName="members" multiple size="6">

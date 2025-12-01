@@ -10,12 +10,7 @@
  * Do not edit the class manually.
  */
 
-export interface UserRegister { 
+export interface CustomTokenObtainPair { 
     username: string;
-    email: string;
-    password1: string;
-    password2: string;
-    matricola: string;
-    firstName?: string;
-    lastName?: string;
+    password: string;
 }

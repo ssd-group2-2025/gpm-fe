@@ -15,7 +15,7 @@
       <span class="label">{{ item.label }}</span>
     </a>
 
-    @if ((authState$ | async)?.isAdmin) {
+    @if (authService.isAdmin()) {
       <div class="nav-divider"></div>
       <div class="nav-section">Admin Only</div>
       <a

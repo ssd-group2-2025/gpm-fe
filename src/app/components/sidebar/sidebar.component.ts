@@ -17,9 +17,7 @@ interface NavItem {
   styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent {
-  private authService = inject(AuthService);
-
-  authState$ = this.authService.authState$;
+  authService = inject(AuthService);
 
   navItems: NavItem[] = [
     { label: 'Dashboard', route: '/dashboard', icon: 'fas fa-chart-line' },

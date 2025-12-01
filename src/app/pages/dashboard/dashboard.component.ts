@@ -69,7 +69,7 @@ export class DashboardComponent implements OnInit {
   }
 
   private calculateStats(
-    groups: Group[],
+    groups: any[],
     users: User[],
     goals: Goal[],
     groupGoals: GroupGoals[]
@@ -83,12 +83,12 @@ export class DashboardComponent implements OnInit {
   }
 
   private processGroupDetails(
-    groups: Group[],
+    groups: any[],
     users: User[],
     groupGoals: GroupGoals[]
   ): void {
     const groupDetails: GroupWithDetails[] = groups.map(group => {
-      const memberCount = users.filter(u => u.group === group.id).length;
+      const memberCount = users.filter(u => (u as any).group === group.id).length;
       const groupGoalsList = groupGoals.filter(gg => gg.group === group.id);
       const completedGoals = groupGoalsList.filter(gg => gg.complete).length;
       const totalGoals = groupGoalsList.length;

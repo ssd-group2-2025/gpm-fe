@@ -12,11 +12,11 @@
 
 export interface User { 
     readonly id?: number;
+    email?: string;
     /**
      * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
      */
     username: string;
-    email?: string;
     firstName?: string;
     lastName?: string;
     matricola: string;

@@ -17,11 +17,15 @@ import { CustomHttpUrlEncodingCodec }                        from '../encoder';
 
 import { Observable }                                        from 'rxjs';
 
+import { CookieTokenRefresh } from '../model/cookieTokenRefresh';
+import { CustomTokenObtainPair } from '../model/customTokenObtainPair';
 import { Login } from '../model/login';
 import { PasswordChange } from '../model/passwordChange';
 import { PasswordReset } from '../model/passwordReset';
 import { PasswordResetConfirm } from '../model/passwordResetConfirm';
 import { ResendEmailVerification } from '../model/resendEmailVerification';
+import { TokenRefresh } from '../model/tokenRefresh';
+import { TokenVerify } from '../model/tokenVerify';
 import { User } from '../model/user';
 import { UserRegister } from '../model/userRegister';
 import { VerifyEmail } from '../model/verifyEmail';
@@ -64,15 +68,15 @@ export class AuthService {
 
     /**
      * 
-     * Check the credentials and return the REST Token if the credentials are valid and authenticated. Calls Django Auth login method to register User ID in Django session framework  Accept the following POST parameters: username, password Return the REST Framework Token Object&#x27;s key.
+     * 
      * @param body 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public authLoginCreate(body: Login, observe?: 'body', reportProgress?: boolean): Observable<Login>;
-    public authLoginCreate(body: Login, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Login>>;
-    public authLoginCreate(body: Login, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Login>>;
-    public authLoginCreate(body: Login, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public authLoginCreate(body: CustomTokenObtainPair, observe?: 'body', reportProgress?: boolean): Observable<CustomTokenObtainPair>;
+    public authLoginCreate(body: CustomTokenObtainPair, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<CustomTokenObtainPair>>;
+    public authLoginCreate(body: CustomTokenObtainPair, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<CustomTokenObtainPair>>;
+    public authLoginCreate(body: CustomTokenObtainPair, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (body === null || body === undefined) {
             throw new Error('Required parameter body was null or undefined when calling authLoginCreate.');
@@ -103,7 +107,7 @@ export class AuthService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<Login>('post',`${this.basePath}/auth/login/`,
+        return this.httpClient.request<CustomTokenObtainPair>('post',`${this.basePath}/auth/login/`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,
@@ -115,99 +119,19 @@ export class AuthService {
     }
 
     /**
-     * Calls Django logout method and delete the Token object assigned to the current User object.
-     * Accepts/Returns nothing.
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public authLogoutCreate(observe?: 'body', reportProgress?: boolean): Observable<any>;
-    public authLogoutCreate(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
-    public authLogoutCreate(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
-    public authLogoutCreate(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
-
-        let headers = this.defaultHeaders;
-
-        // authentication (Basic) required
-        if (this.configuration.username || this.configuration.password) {
-            headers = headers.set('Authorization', 'Basic ' + btoa(this.configuration.username + ':' + this.configuration.password));
-        }
-
-        // to determine the Accept header
-        let httpHeaderAccepts: string[] = [
-        ];
-        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        if (httpHeaderAcceptSelected != undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-        // to determine the Content-Type header
-        const consumes: string[] = [
-        ];
-
-        return this.httpClient.request<any>('post',`${this.basePath}/auth/logout/`,
-            {
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * Calls Django logout method and delete the Token object assigned to the current User object.
-     * Accepts/Returns nothing.
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public authLogoutList(observe?: 'body', reportProgress?: boolean): Observable<any>;
-    public authLogoutList(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
-    public authLogoutList(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
-    public authLogoutList(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
-
-        let headers = this.defaultHeaders;
-
-        // authentication (Basic) required
-        if (this.configuration.username || this.configuration.password) {
-            headers = headers.set('Authorization', 'Basic ' + btoa(this.configuration.username + ':' + this.configuration.password));
-        }
-
-        // to determine the Accept header
-        let httpHeaderAccepts: string[] = [
-        ];
-        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        if (httpHeaderAcceptSelected != undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-        // to determine the Content-Type header
-        const consumes: string[] = [
-        ];
-
-        return this.httpClient.request<any>('get',`${this.basePath}/auth/logout/`,
-            {
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * Calls Django Auth SetPasswordForm save method.
-     * Accepts the following POST parameters: new_password1, new_password2 Returns the success/fail message.
+     * 
+     * Check the credentials and return the REST Token if the credentials are valid and authenticated. Calls Django Auth login method to register User ID in Django session framework  Accept the following POST parameters: username, password Return the REST Framework Token Object&#x27;s key.
      * @param body 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public authPasswordChangeCreate(body: PasswordChange, observe?: 'body', reportProgress?: boolean): Observable<PasswordChange>;
-    public authPasswordChangeCreate(body: PasswordChange, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<PasswordChange>>;
-    public authPasswordChangeCreate(body: PasswordChange, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<PasswordChange>>;
-    public authPasswordChangeCreate(body: PasswordChange, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public authLogoutLoginCreate(body: Login, observe?: 'body', reportProgress?: boolean): Observable<Login>;
+    public authLogoutLoginCreate(body: Login, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Login>>;
+    public authLogoutLoginCreate(body: Login, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Login>>;
+    public authLogoutLoginCreate(body: Login, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (body === null || body === undefined) {
-            throw new Error('Required parameter body was null or undefined when calling authPasswordChangeCreate.');
+            throw new Error('Required parameter body was null or undefined when calling authLogoutLoginCreate.');
         }
 
         let headers = this.defaultHeaders;
@@ -235,7 +159,139 @@ export class AuthService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<PasswordChange>('post',`${this.basePath}/auth/password/change/`,
+        return this.httpClient.request<Login>('post',`${this.basePath}/auth/logout/login/`,
+            {
+                body: body,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Calls Django logout method and delete the Token object assigned to the current User object.
+     * Accepts/Returns nothing.
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public authLogoutLogoutCreate(observe?: 'body', reportProgress?: boolean): Observable<any>;
+    public authLogoutLogoutCreate(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
+    public authLogoutLogoutCreate(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
+    public authLogoutLogoutCreate(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
+        let headers = this.defaultHeaders;
+
+        // authentication (Basic) required
+        if (this.configuration.username || this.configuration.password) {
+            headers = headers.set('Authorization', 'Basic ' + btoa(this.configuration.username + ':' + this.configuration.password));
+        }
+
+        // to determine the Accept header
+        let httpHeaderAccepts: string[] = [
+        ];
+        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+        ];
+
+        return this.httpClient.request<any>('post',`${this.basePath}/auth/logout/logout/`,
+            {
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Calls Django logout method and delete the Token object assigned to the current User object.
+     * Accepts/Returns nothing.
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public authLogoutLogoutList(observe?: 'body', reportProgress?: boolean): Observable<any>;
+    public authLogoutLogoutList(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
+    public authLogoutLogoutList(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
+    public authLogoutLogoutList(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
+        let headers = this.defaultHeaders;
+
+        // authentication (Basic) required
+        if (this.configuration.username || this.configuration.password) {
+            headers = headers.set('Authorization', 'Basic ' + btoa(this.configuration.username + ':' + this.configuration.password));
+        }
+
+        // to determine the Accept header
+        let httpHeaderAccepts: string[] = [
+        ];
+        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+        ];
+
+        return this.httpClient.request<any>('get',`${this.basePath}/auth/logout/logout/`,
+            {
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Calls Django Auth SetPasswordForm save method.
+     * Accepts the following POST parameters: new_password1, new_password2 Returns the success/fail message.
+     * @param body 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public authLogoutPasswordChangeCreate(body: PasswordChange, observe?: 'body', reportProgress?: boolean): Observable<PasswordChange>;
+    public authLogoutPasswordChangeCreate(body: PasswordChange, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<PasswordChange>>;
+    public authLogoutPasswordChangeCreate(body: PasswordChange, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<PasswordChange>>;
+    public authLogoutPasswordChangeCreate(body: PasswordChange, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
+        if (body === null || body === undefined) {
+            throw new Error('Required parameter body was null or undefined when calling authLogoutPasswordChangeCreate.');
+        }
+
+        let headers = this.defaultHeaders;
+
+        // authentication (Basic) required
+        if (this.configuration.username || this.configuration.password) {
+            headers = headers.set('Authorization', 'Basic ' + btoa(this.configuration.username + ':' + this.configuration.password));
+        }
+
+        // to determine the Accept header
+        let httpHeaderAccepts: string[] = [
+            'application/json'
+        ];
+        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+
+        return this.httpClient.request<PasswordChange>('post',`${this.basePath}/auth/logout/password/change/`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,
@@ -253,13 +309,13 @@ export class AuthService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public authPasswordResetConfirmCreate(body: PasswordResetConfirm, observe?: 'body', reportProgress?: boolean): Observable<PasswordResetConfirm>;
-    public authPasswordResetConfirmCreate(body: PasswordResetConfirm, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<PasswordResetConfirm>>;
-    public authPasswordResetConfirmCreate(body: PasswordResetConfirm, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<PasswordResetConfirm>>;
-    public authPasswordResetConfirmCreate(body: PasswordResetConfirm, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public authLogoutPasswordResetConfirmCreate(body: PasswordResetConfirm, observe?: 'body', reportProgress?: boolean): Observable<PasswordResetConfirm>;
+    public authLogoutPasswordResetConfirmCreate(body: PasswordResetConfirm, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<PasswordResetConfirm>>;
+    public authLogoutPasswordResetConfirmCreate(body: PasswordResetConfirm, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<PasswordResetConfirm>>;
+    public authLogoutPasswordResetConfirmCreate(body: PasswordResetConfirm, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (body === null || body === undefined) {
-            throw new Error('Required parameter body was null or undefined when calling authPasswordResetConfirmCreate.');
+            throw new Error('Required parameter body was null or undefined when calling authLogoutPasswordResetConfirmCreate.');
         }
 
         let headers = this.defaultHeaders;
@@ -287,7 +343,7 @@ export class AuthService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<PasswordResetConfirm>('post',`${this.basePath}/auth/password/reset/confirm/`,
+        return this.httpClient.request<PasswordResetConfirm>('post',`${this.basePath}/auth/logout/password/reset/confirm/`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,
@@ -305,13 +361,13 @@ export class AuthService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public authPasswordResetCreate(body: PasswordReset, observe?: 'body', reportProgress?: boolean): Observable<PasswordReset>;
-    public authPasswordResetCreate(body: PasswordReset, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<PasswordReset>>;
-    public authPasswordResetCreate(body: PasswordReset, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<PasswordReset>>;
-    public authPasswordResetCreate(body: PasswordReset, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public authLogoutPasswordResetCreate(body: PasswordReset, observe?: 'body', reportProgress?: boolean): Observable<PasswordReset>;
+    public authLogoutPasswordResetCreate(body: PasswordReset, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<PasswordReset>>;
+    public authLogoutPasswordResetCreate(body: PasswordReset, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<PasswordReset>>;
+    public authLogoutPasswordResetCreate(body: PasswordReset, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (body === null || body === undefined) {
-            throw new Error('Required parameter body was null or undefined when calling authPasswordResetCreate.');
+            throw new Error('Required parameter body was null or undefined when calling authLogoutPasswordResetCreate.');
         }
 
         let headers = this.defaultHeaders;
@@ -339,7 +395,256 @@ export class AuthService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<PasswordReset>('post',`${this.basePath}/auth/password/reset/`,
+        return this.httpClient.request<PasswordReset>('post',`${this.basePath}/auth/logout/password/reset/`,
+            {
+                body: body,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * 
+     * 
+     * @param body 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public authLogoutTokenRefreshCreate(body: CookieTokenRefresh, observe?: 'body', reportProgress?: boolean): Observable<CookieTokenRefresh>;
+    public authLogoutTokenRefreshCreate(body: CookieTokenRefresh, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<CookieTokenRefresh>>;
+    public authLogoutTokenRefreshCreate(body: CookieTokenRefresh, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<CookieTokenRefresh>>;
+    public authLogoutTokenRefreshCreate(body: CookieTokenRefresh, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
+        if (body === null || body === undefined) {
+            throw new Error('Required parameter body was null or undefined when calling authLogoutTokenRefreshCreate.');
+        }
+
+        let headers = this.defaultHeaders;
+
+        // authentication (Basic) required
+        if (this.configuration.username || this.configuration.password) {
+            headers = headers.set('Authorization', 'Basic ' + btoa(this.configuration.username + ':' + this.configuration.password));
+        }
+
+        // to determine the Accept header
+        let httpHeaderAccepts: string[] = [
+            'application/json'
+        ];
+        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+
+        return this.httpClient.request<CookieTokenRefresh>('post',`${this.basePath}/auth/logout/token/refresh/`,
+            {
+                body: body,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * 
+     * Takes a token and indicates if it is valid.  This view provides no information about a token&#x27;s fitness for a particular use.
+     * @param body 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public authLogoutTokenVerifyCreate(body: TokenVerify, observe?: 'body', reportProgress?: boolean): Observable<TokenVerify>;
+    public authLogoutTokenVerifyCreate(body: TokenVerify, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<TokenVerify>>;
+    public authLogoutTokenVerifyCreate(body: TokenVerify, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<TokenVerify>>;
+    public authLogoutTokenVerifyCreate(body: TokenVerify, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
+        if (body === null || body === undefined) {
+            throw new Error('Required parameter body was null or undefined when calling authLogoutTokenVerifyCreate.');
+        }
+
+        let headers = this.defaultHeaders;
+
+        // authentication (Basic) required
+        if (this.configuration.username || this.configuration.password) {
+            headers = headers.set('Authorization', 'Basic ' + btoa(this.configuration.username + ':' + this.configuration.password));
+        }
+
+        // to determine the Accept header
+        let httpHeaderAccepts: string[] = [
+            'application/json'
+        ];
+        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+
+        return this.httpClient.request<TokenVerify>('post',`${this.basePath}/auth/logout/token/verify/`,
+            {
+                body: body,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Reads and updates UserModel fields Accepts GET, PUT, PATCH methods.
+     * Default accepted fields: username, first_name, last_name Default display fields: pk, username, email, first_name, last_name Read-only fields: pk, email  Returns UserModel fields.
+     * @param body 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public authLogoutUserPartialUpdate(body: User, observe?: 'body', reportProgress?: boolean): Observable<User>;
+    public authLogoutUserPartialUpdate(body: User, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<User>>;
+    public authLogoutUserPartialUpdate(body: User, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<User>>;
+    public authLogoutUserPartialUpdate(body: User, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
+        if (body === null || body === undefined) {
+            throw new Error('Required parameter body was null or undefined when calling authLogoutUserPartialUpdate.');
+        }
+
+        let headers = this.defaultHeaders;
+
+        // authentication (Basic) required
+        if (this.configuration.username || this.configuration.password) {
+            headers = headers.set('Authorization', 'Basic ' + btoa(this.configuration.username + ':' + this.configuration.password));
+        }
+
+        // to determine the Accept header
+        let httpHeaderAccepts: string[] = [
+            'application/json'
+        ];
+        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+
+        return this.httpClient.request<User>('patch',`${this.basePath}/auth/logout/user/`,
+            {
+                body: body,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Reads and updates UserModel fields Accepts GET, PUT, PATCH methods.
+     * Default accepted fields: username, first_name, last_name Default display fields: pk, username, email, first_name, last_name Read-only fields: pk, email  Returns UserModel fields.
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public authLogoutUserRead(observe?: 'body', reportProgress?: boolean): Observable<User>;
+    public authLogoutUserRead(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<User>>;
+    public authLogoutUserRead(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<User>>;
+    public authLogoutUserRead(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
+        let headers = this.defaultHeaders;
+
+        // authentication (Basic) required
+        if (this.configuration.username || this.configuration.password) {
+            headers = headers.set('Authorization', 'Basic ' + btoa(this.configuration.username + ':' + this.configuration.password));
+        }
+
+        // to determine the Accept header
+        let httpHeaderAccepts: string[] = [
+            'application/json'
+        ];
+        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+        ];
+
+        return this.httpClient.request<User>('get',`${this.basePath}/auth/logout/user/`,
+            {
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Reads and updates UserModel fields Accepts GET, PUT, PATCH methods.
+     * Default accepted fields: username, first_name, last_name Default display fields: pk, username, email, first_name, last_name Read-only fields: pk, email  Returns UserModel fields.
+     * @param body 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public authLogoutUserUpdate(body: User, observe?: 'body', reportProgress?: boolean): Observable<User>;
+    public authLogoutUserUpdate(body: User, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<User>>;
+    public authLogoutUserUpdate(body: User, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<User>>;
+    public authLogoutUserUpdate(body: User, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
+        if (body === null || body === undefined) {
+            throw new Error('Required parameter body was null or undefined when calling authLogoutUserUpdate.');
+        }
+
+        let headers = this.defaultHeaders;
+
+        // authentication (Basic) required
+        if (this.configuration.username || this.configuration.password) {
+            headers = headers.set('Authorization', 'Basic ' + btoa(this.configuration.username + ':' + this.configuration.password));
+        }
+
+        // to determine the Accept header
+        let httpHeaderAccepts: string[] = [
+            'application/json'
+        ];
+        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+
+        return this.httpClient.request<User>('put',`${this.basePath}/auth/logout/user/`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,
@@ -507,19 +812,19 @@ export class AuthService {
     }
 
     /**
-     * Reads and updates UserModel fields Accepts GET, PUT, PATCH methods.
-     * Default accepted fields: username, first_name, last_name Default display fields: pk, username, email, first_name, last_name Read-only fields: pk, email  Returns UserModel fields.
+     * 
+     * Takes a refresh type JSON web token and returns an access type JSON web token if the refresh token is valid.
      * @param body 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public authUserPartialUpdate(body: User, observe?: 'body', reportProgress?: boolean): Observable<User>;
-    public authUserPartialUpdate(body: User, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<User>>;
-    public authUserPartialUpdate(body: User, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<User>>;
-    public authUserPartialUpdate(body: User, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public authTokenRefreshCreate(body: TokenRefresh, observe?: 'body', reportProgress?: boolean): Observable<TokenRefresh>;
+    public authTokenRefreshCreate(body: TokenRefresh, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<TokenRefresh>>;
+    public authTokenRefreshCreate(body: TokenRefresh, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<TokenRefresh>>;
+    public authTokenRefreshCreate(body: TokenRefresh, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (body === null || body === undefined) {
-            throw new Error('Required parameter body was null or undefined when calling authUserPartialUpdate.');
+            throw new Error('Required parameter body was null or undefined when calling authTokenRefreshCreate.');
         }
 
         let headers = this.defaultHeaders;
@@ -547,100 +852,7 @@ export class AuthService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<User>('patch',`${this.basePath}/auth/user/`,
-            {
-                body: body,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * Reads and updates UserModel fields Accepts GET, PUT, PATCH methods.
-     * Default accepted fields: username, first_name, last_name Default display fields: pk, username, email, first_name, last_name Read-only fields: pk, email  Returns UserModel fields.
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public authUserRead(observe?: 'body', reportProgress?: boolean): Observable<User>;
-    public authUserRead(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<User>>;
-    public authUserRead(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<User>>;
-    public authUserRead(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
-
-        let headers = this.defaultHeaders;
-
-        // authentication (Basic) required
-        if (this.configuration.username || this.configuration.password) {
-            headers = headers.set('Authorization', 'Basic ' + btoa(this.configuration.username + ':' + this.configuration.password));
-        }
-
-        // to determine the Accept header
-        let httpHeaderAccepts: string[] = [
-            'application/json'
-        ];
-        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        if (httpHeaderAcceptSelected != undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-        // to determine the Content-Type header
-        const consumes: string[] = [
-        ];
-
-        return this.httpClient.request<User>('get',`${this.basePath}/auth/user/`,
-            {
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * Reads and updates UserModel fields Accepts GET, PUT, PATCH methods.
-     * Default accepted fields: username, first_name, last_name Default display fields: pk, username, email, first_name, last_name Read-only fields: pk, email  Returns UserModel fields.
-     * @param body 
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public authUserUpdate(body: User, observe?: 'body', reportProgress?: boolean): Observable<User>;
-    public authUserUpdate(body: User, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<User>>;
-    public authUserUpdate(body: User, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<User>>;
-    public authUserUpdate(body: User, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
-
-        if (body === null || body === undefined) {
-            throw new Error('Required parameter body was null or undefined when calling authUserUpdate.');
-        }
-
-        let headers = this.defaultHeaders;
-
-        // authentication (Basic) required
-        if (this.configuration.username || this.configuration.password) {
-            headers = headers.set('Authorization', 'Basic ' + btoa(this.configuration.username + ':' + this.configuration.password));
-        }
-
-        // to determine the Accept header
-        let httpHeaderAccepts: string[] = [
-            'application/json'
-        ];
-        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        if (httpHeaderAcceptSelected != undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-        // to determine the Content-Type header
-        const consumes: string[] = [
-            'application/json'
-        ];
-        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
-        if (httpContentTypeSelected != undefined) {
-            headers = headers.set('Content-Type', httpContentTypeSelected);
-        }
-
-        return this.httpClient.request<User>('put',`${this.basePath}/auth/user/`,
+        return this.httpClient.request<TokenRefresh>('post',`${this.basePath}/auth/token/refresh/`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,

@@ -10,12 +10,10 @@
  * Do not edit the class manually.
  */
 
-export interface UserRegister { 
-    username: string;
-    email: string;
-    password1: string;
-    password2: string;
-    matricola: string;
-    firstName?: string;
-    lastName?: string;
+export interface CookieTokenRefresh { 
+    /**
+     * WIll override cookie.
+     */
+    refresh?: string;
+    readonly access?: string;
 }
