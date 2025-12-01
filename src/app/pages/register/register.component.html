@@ -1,0 +1,134 @@
+<div class="register-container">
+  <div class="register-card">
+    <div class="register-header">
+      <h1>Create Account</h1>
+      <p>Join Group Project Manager</p>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+      @if (errorMessage()) {
+        <div class="error-message">
+          {{ errorMessage() }}
+        </div>
+      }
+
+      @if (successMessage()) {
+        <div class="success-message">
+          {{ successMessage() }}
+        </div>
+      }
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="firstName">First Name*</label>
+          <input
+            id="firstName"
+            type="text"
+            formControlName="firstName"
+            placeholder="John"
+            [class.error]="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="lastName">Last Name*</label>
+          <input
+            id="lastName"
+            type="text"
+            formControlName="lastName"
+            placeholder="Doe"
+            [class.error]="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="username">Username*</label>
+        <input
+          id="username"
+          type="text"
+          formControlName="username"
+          placeholder="johndoe"
+          [class.error]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
+        />
+        @if (registerForm.get('username')?.invalid && registerForm.get('username')?.touched) {
+          <span class="field-error">Username is required</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email*</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="john.doe@example.com"
+          [class.error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
+        />
+        @if (registerForm.get('email')?.invalid && registerForm.get('email')?.touched) {
+          <span class="field-error">Valid email is required</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="matricola">Matricola*</label>
+        <input
+          id="matricola"
+          type="text"
+          formControlName="matricola"
+          placeholder="123456"
+          [class.error]="registerForm.get('matricola')?.invalid && registerForm.get('matricola')?.touched"
+        />
+        @if (registerForm.get('matricola')?.invalid && registerForm.get('matricola')?.touched) {
+          <span class="field-error">Matricola is required</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="password1">Password*</label>
+        <input
+          id="password1"
+          type="password"
+          formControlName="password1"
+          placeholder="••••••••"
+          [class.error]="registerForm.get('password1')?.invalid && registerForm.get('password1')?.touched"
+        />
+        @if (registerForm.get('password1')?.invalid && registerForm.get('password1')?.touched) {
+          <span class="field-error">Password must be at least 8 characters</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="password2">Confirm Password*</label>
+        <input
+          id="password2"
+          type="password"
+          formControlName="password2"
+          placeholder="••••••••"
+          [class.error]="registerForm.get('password2')?.invalid && registerForm.get('password2')?.touched"
+        />
+        @if (registerForm.hasError('passwordMismatch') && registerForm.get('password2')?.touched) {
+          <span class="field-error">Passwords do not match</span>
+        }
+      </div>
+
+      <button
+        type="submit"
+        class="register-button"
+        [disabled]="registerForm.invalid || loading()"
+      >
+        @if (loading()) {
+          <span class="spinner"></span>
+          Creating Account...
+        } @else {
+          Create Account
+        }
+      </button>
+
+      <div class="login-link">
+        Already have an account?
+        <a routerLink="/login">Sign In</a>
+      </div>
+    </form>
+  </div>
+</div>

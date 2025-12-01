@@ -1,0 +1,13 @@
+export * from './auth.service';
+import { AuthService } from './auth.service';
+export * from './goals.service';
+import { GoalsService } from './goals.service';
+export * from './groupGoals.service';
+import { GroupGoalsService } from './groupGoals.service';
+export * from './groups.service';
+import { GroupsService } from './groups.service';
+export * from './topics.service';
+import { TopicsService } from './topics.service';
+export * from './users.service';
+import { UsersService } from './users.service';
+export const APIS = [AuthService, GoalsService, GroupGoalsService, GroupsService, TopicsService, UsersService];

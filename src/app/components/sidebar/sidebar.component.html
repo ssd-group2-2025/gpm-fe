@@ -1,0 +1,38 @@
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <h1 class="logo">Groups</h1>
+    <p class="subtitle">Secure Software Design</p>
+  </div>
+
+  <nav class="nav-menu">
+    <a
+      *ngFor="let item of navItems"
+      [routerLink]="item.route"
+      routerLinkActive="active"
+      class="nav-item"
+    >
+      <i class="icon {{ item.icon }}"></i>
+      <span class="label">{{ item.label }}</span>
+    </a>
+
+    @if ((authState$ | async)?.isAdmin) {
+      <div class="nav-divider"></div>
+      <div class="nav-section">Admin Only</div>
+      <a
+        *ngFor="let item of adminNavItems"
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        class="nav-item admin-item"
+      >
+        <i class="icon {{ item.icon }}"></i>
+        <span class="label">{{ item.label }}</span>
+      </a>
+    }
+  </nav>
+  <div class="sidebar-footer">
+    <button class="logout-btn" (click)="logout()">
+      <i class="fas fa-sign-out-alt"></i>
+      <span>Logout</span>
+    </button>
+  </div>
+</aside>

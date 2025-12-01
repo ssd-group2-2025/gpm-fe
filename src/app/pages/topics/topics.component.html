@@ -1,0 +1,79 @@
+<div class="page">
+  <div class="header">
+    <div class="header-content">
+      <div class="header-text">
+        <h1>Topics Management</h1>
+        <p>Manage project topics and themes</p>
+      </div>
+      <button (click)="showCreateModal()" class="btn-primary">
+        <i class="fas fa-plus"></i>
+        New Topic
+      </button>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="loading">
+      <div class="spinner-large"></div>
+      <p>Loading topics...</p>
+    </div>
+  } @else {
+    <div class="topics-grid">
+      @for (topic of topics(); track topic.id) {
+        <div class="topic-card">
+          <div class="topic-icon"><i class="fas fa-book"></i></div>
+          <div class="topic-content">
+            <h3>{{ topic.title }}</h3>
+            <div class="topic-id">ID: {{ topic.id }}</div>
+          </div>
+          <div class="topic-actions">
+            <button (click)="editTopic(topic)" class="btn-icon-action edit">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button (click)="deleteTopic(topic.id!)" class="btn-icon-action delete">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      }
+      @if (topics().length === 0) {
+        <div class="empty-state">
+          <div class="empty-icon"><i class="fas fa-book"></i></div>
+          <h3>No topics yet</h3>
+          <p>Create your first topic to get started</p>
+        </div>
+      }
+    </div>
+  }
+
+  @if (showModal()) {
+    <div class="modal-overlay" (click)="closeModal()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>{{ editingTopic() ? 'Edit Topic' : 'Create New Topic' }}</h2>
+          <button (click)="closeModal()" class="close-btn"><i class="fas fa-times"></i></button>
+        </div>
+        <form [formGroup]="topicForm" (ngSubmit)="submitForm()">
+          <div class="form-group">
+            <label>Title*</label>
+            <input formControlName="title" placeholder="Enter topic title" />
+            @if (topicForm.get('title')?.invalid && topicForm.get('title')?.touched) {
+              <span class="field-error">Title is required</span>
+            }
+          </div>
+          <div class="modal-actions">
+            <button type="button" (click)="closeModal()" class="btn-secondary">Cancel</button>
+            <button type="submit" [disabled]="topicForm.invalid || saving()" class="btn-primary">
+              @if (saving()) {
+                <span class="spinner-small"></span>
+                Saving...
+              } @else {
+                {{ editingTopic() ? 'Update' : 'Create' }} Topic
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>

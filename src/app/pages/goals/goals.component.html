@@ -1,0 +1,93 @@
+<div class="page">
+  <div class="header">
+    <div class="header-content">
+      <div class="header-text">
+        <h1>Goals Management</h1>
+        <p>Define and manage project goals</p>
+      </div>
+      <button (click)="showCreateModal()" class="btn-primary">
+        <i class="fas fa-plus"></i>
+        New Goal
+      </button>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="loading">
+      <div class="spinner-large"></div>
+      <p>Loading goals...</p>
+    </div>
+  } @else {
+    <div class="goals-grid">
+      @for (goal of goals(); track goal.id) {
+        <div class="goal-card">
+          <div class="goal-header">
+            <div class="goal-badge">{{ goal.points }} pts</div>
+            <div class="goal-actions">
+              <button (click)="editGoal(goal)" class="btn-icon-action edit">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button (click)="deleteGoal(goal.id!)" class="btn-icon-action delete">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+          <h3>{{ goal.title }}</h3>
+          <p>{{ goal.description }}</p>
+        </div>
+      }
+      @if (goals().length === 0) {
+        <div class="empty-state">
+          <div class="empty-icon"><i class="fas fa-bullseye"></i></div>
+          <h3>No goals yet</h3>
+          <p>Create your first goal to get started</p>
+        </div>
+      }
+    </div>
+  }
+
+  @if (showModal()) {
+    <div class="modal-overlay" (click)="closeModal()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>{{ editingGoal() ? 'Edit Goal' : 'Create New Goal' }}</h2>
+          <button (click)="closeModal()" class="close-btn"><i class="fas fa-times"></i></button>
+        </div>
+        <form [formGroup]="goalForm" (ngSubmit)="submitForm()">
+          <div class="form-group">
+            <label>Title*</label>
+            <input formControlName="title" placeholder="Enter goal title" />
+            @if (goalForm.get('title')?.invalid && goalForm.get('title')?.touched) {
+              <span class="field-error">Title is required</span>
+            }
+          </div>
+          <div class="form-group">
+            <label>Description*</label>
+            <textarea formControlName="description" placeholder="Enter goal description" rows="4"></textarea>
+            @if (goalForm.get('description')?.invalid && goalForm.get('description')?.touched) {
+              <span class="field-error">Description is required</span>
+            }
+          </div>
+          <div class="form-group">
+            <label>Points*</label>
+            <input type="number" formControlName="points" placeholder="0" />
+            @if (goalForm.get('points')?.invalid && goalForm.get('points')?.touched) {
+              <span class="field-error">Points are required</span>
+            }
+          </div>
+          <div class="modal-actions">
+            <button type="button" (click)="closeModal()" class="btn-secondary">Cancel</button>
+            <button type="submit" [disabled]="goalForm.invalid || saving()" class="btn-primary">
+              @if (saving()) {
+                <span class="spinner-small"></span>
+                Saving...
+              } @else {
+                {{ editingGoal() ? 'Update' : 'Create' }} Goal
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>

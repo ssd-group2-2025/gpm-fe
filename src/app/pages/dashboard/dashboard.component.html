@@ -1,0 +1,108 @@
+<div class="dashboard">
+  <div class="dashboard-header">
+    <div>
+      <h1>Dashboard</h1>
+      <p class="welcome-text">
+        Welcome back, {{ authService.currentUser?.firstName || authService.currentUser?.username }}!
+        @if (authService.isAdmin) {
+          <span class="badge">Admin</span>
+        } @else {
+          <span class="badge student">Student</span>
+        }
+      </p>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="loading">
+      <div class="spinner-large"></div>
+      <p>Loading dashboard data...</p>
+    </div>
+  } @else {
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon groups"><i class="fas fa-users"></i></div>
+        <div class="stat-content">
+          <h3>{{ stats().totalGroups }}</h3>
+          <p>Total Groups</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon students"><i class="fas fa-user-graduate"></i></div>
+        <div class="stat-content">
+          <h3>{{ stats().totalStudents }}</h3>
+          <p>Total Students</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon goals"><i class="fas fa-bullseye"></i></div>
+        <div class="stat-content">
+          <h3>{{ stats().totalGoals }}</h3>
+          <p>Total Goals</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon completed"><i class="fas fa-check-circle"></i></div>
+        <div class="stat-content">
+          <h3>{{ stats().completedGoals }}</h3>
+          <p>Completed Goals</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="groups-section">
+      <div class="section-header">
+        <h2>Groups Overview</h2>
+      </div>
+
+      <div class="groups-grid">
+        @for (group of groupsWithDetails(); track group.id) {
+          <div class="group-card">
+            <div class="group-header">
+              <h3>{{ group.name }}</h3>
+              @if (!authService.isAdmin && authService.userGroup === group.id) {
+                <span class="badge my-group">My Group</span>
+              }
+            </div>
+
+            <div class="group-stats">
+              <div class="group-stat">
+                <span class="stat-label">Members:</span>
+                <span class="stat-value">{{ group.memberCount }}</span>
+              </div>
+              <div class="group-stat">
+                <span class="stat-label">Goals:</span>
+                <span class="stat-value">{{ group.completedGoals }}/{{ group.totalGoals }}</span>
+              </div>
+            </div>
+
+            <div class="progress-section">
+              <div class="progress-header">
+                <span>Progress</span>
+                <span>{{ group.progress }}%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" [style.width.%]="group.progress"></div>
+              </div>
+            </div>
+
+            <div class="group-links">
+              @if (group.linkDjango) {
+                <a [href]="group.linkDjango" target="_blank" class="link-button">Django</a>
+              }
+              @if (group.linkTui) {
+                <a [href]="group.linkTui" target="_blank" class="link-button">TUI</a>
+              }
+              @if (group.linkGui) {
+                <a [href]="group.linkGui" target="_blank" class="link-button">GUI</a>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

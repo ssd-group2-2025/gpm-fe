@@ -1,0 +1,167 @@
+<div class="page">
+  <div class="header">
+    <div class="header-content">
+      <div class="header-text">
+        <h1>Groups</h1>
+        <p>{{ authService.isAdmin ? 'Manage all groups' : 'Manage your groups and join others' }}</p>
+      </div>
+      <button (click)="showCreateModal()" class="btn-primary">
+        <i class="fas fa-plus"></i>
+        Create Group
+      </button>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="loading">
+      <div class="spinner-large"></div>
+      <p>Loading groups...</p>
+    </div>
+  } @else {
+    <div class="groups-grid">
+      @for (group of groupsView(); track group.id) {
+        <div class="group-card" [class.my-group]="group.isMyGroup">
+          <div class="group-header">
+            <div class="group-badge" [class.my-group]="group.isMyGroup">
+              <i class="fas" [class.fa-check-circle]="group.isMyGroup" [class.fa-users]="!group.isMyGroup"></i>
+              {{ group.isMyGroup ? 'My Group' : 'Other Group' }}
+            </div>
+            @if (group.canEdit) {
+              <div class="group-actions">
+                <button (click)="editGroup(group)" class="btn-icon-action edit">
+                  <i class="fas fa-edit"></i>
+                </button>
+                @if (authService.isAdmin) {
+                  <button (click)="deleteGroup(group.id!)" class="btn-icon-action delete">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                }
+              </div>
+            }
+          </div>
+
+          <h3>{{ group.name }}</h3>
+
+          <div class="group-info">
+            <div class="info-item">
+              <span class="label">Topic:</span>
+              <span class="value">{{ group.topicTitle || 'N/A' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Members:</span>
+              <span class="value">{{ group.memberNames?.length || 0 }}</span>
+            </div>
+          </div>
+
+          <div class="members-list">
+            @for (name of group.memberNames; track name) {
+              <span class="member-tag">{{ name }}</span>
+            }
+          </div>
+
+          <div class="group-links">
+            @if (group.linkDjango) {
+              <a [href]="group.linkDjango" target="_blank" class="link-btn django">Django</a>
+            }
+            @if (group.linkTui) {
+              <a [href]="group.linkTui" target="_blank" class="link-btn tui">TUI</a>
+            }
+            @if (group.linkGui) {
+              <a [href]="group.linkGui" target="_blank" class="link-btn gui">GUI</a>
+            }
+          </div>
+
+          @if (!group.isMyGroup && !authService.isAdmin) {
+            <button (click)="joinGroup(group)" class="btn-join">
+              Join Group
+            </button>
+          }
+          @if (group.isMyGroup && !authService.isAdmin) {
+            <button (click)="leaveGroup(group)" class="btn-leave">
+              Leave Group
+            </button>
+          }
+        </div>
+      }
+      @if (groupsView().length === 0) {
+        <div class="empty-state">
+          <div class="empty-icon"><i class="fas fa-users"></i></div>
+          <h3>No groups yet</h3>
+          <p>Create your first group to get started</p>
+        </div>
+      }
+    </div>
+  }
+
+  @if (showModal()) {
+    <div class="modal-overlay" (click)="closeModal()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>{{ editingGroup() ? 'Edit Group' : 'Create New Group' }}</h2>
+          <button (click)="closeModal()" class="close-btn"><i class="fas fa-times"></i></button>
+        </div>
+        <form [formGroup]="groupForm" (ngSubmit)="submitForm()">
+          <div class="form-group">
+            <label>Group Name*</label>
+            <input formControlName="name" placeholder="Enter group name" />
+            @if (groupForm.get('name')?.invalid && groupForm.get('name')?.touched) {
+              <span class="field-error">Name is required</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label>Topic*</label>
+            <select formControlName="topic">
+              <option value="">Select a topic</option>
+              @for (topic of topics(); track topic.id) {
+                <option [value]="topic.id">{{ topic.title }}</option>
+              }
+            </select>
+            @if (groupForm.get('topic')?.invalid && groupForm.get('topic')?.touched) {
+              <span class="field-error">Topic is required</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label>Django Link</label>
+            <input formControlName="linkDjango" placeholder="https://github.com/..." />
+          </div>
+
+          <div class="form-group">
+            <label>TUI Link</label>
+            <input formControlName="linkTui" placeholder="https://github.com/..." />
+          </div>
+
+          <div class="form-group">
+            <label>GUI Link</label>
+            <input formControlName="linkGui" placeholder="https://github.com/..." />
+          </div>
+
+          @if (authService.isAdmin) {
+            <div class="form-group">
+              <label>Members</label>
+              <select formControlName="members" multiple size="6">
+                @for (user of users(); track user.id) {
+                  <option [value]="user.id">{{ user.username }} ({{ user.email }})</option>
+                }
+              </select>
+              <small>Hold Ctrl/Cmd to select multiple</small>
+            </div>
+          }
+
+          <div class="modal-actions">
+            <button type="button" (click)="closeModal()" class="btn-secondary">Cancel</button>
+            <button type="submit" [disabled]="groupForm.invalid || saving()" class="btn-primary">
+              @if (saving()) {
+                <span class="spinner-small"></span>
+                Saving...
+              } @else {
+                {{ editingGroup() ? 'Update' : 'Create' }} Group
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>

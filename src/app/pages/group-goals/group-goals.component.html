@@ -1,0 +1,110 @@
+<div class="page">
+  <div class="header">
+    <div class="header-content">
+      <div class="header-text">
+        <h1>Group Goals Assignment</h1>
+        <p>Assign and track goals for each group</p>
+      </div>
+      <button (click)="showCreateModal()" class="btn-primary">
+        <i class="fas fa-plus"></i>
+        Assign Goal
+      </button>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="loading">
+      <div class="spinner-large"></div>
+      <p>Loading assignments...</p>
+    </div>
+  } @else {
+    <div class="assignments-grid">
+      @for (gg of groupGoalsView(); track gg.id) {
+        <div class="assignment-card" [class.completed]="gg.complete">
+          <div class="assignment-status">
+            <div class="status-badge" [class.complete]="gg.complete">
+              <i class="fas" [class.fa-check-circle]="gg.complete" [class.fa-circle]="!gg.complete"></i>
+              {{ gg.complete ? 'Complete' : 'Incomplete' }}
+            </div>
+            <div class="assignment-actions">
+              <button (click)="toggleComplete(gg)" class="btn-icon-action toggle">
+                <i class="fas" [class.fa-undo]="gg.complete" [class.fa-check]="!gg.complete"></i>
+              </button>
+              <button (click)="deleteAssignment(gg.id!)" class="btn-icon-action delete">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+          <div class="assignment-content">
+            <h3>{{ gg.groupName }}</h3>
+            <div class="goal-info">
+              <span class="goal-title">{{ gg.goalTitle }}</span>
+              <span class="goal-points">{{ gg.goalPoints }} pts</span>
+            </div>
+          </div>
+        </div>
+      }
+      @if (groupGoalsView().length === 0) {
+        <div class="empty-state">
+          <div class="empty-icon"><i class="fas fa-clipboard-check"></i></div>
+          <h3>No assignments yet</h3>
+          <p>Start assigning goals to groups</p>
+        </div>
+      }
+    </div>
+  }
+
+  @if (showModal()) {
+    <div class="modal-overlay" (click)="closeModal()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>Assign Goal to Group</h2>
+          <button (click)="closeModal()" class="close-btn"><i class="fas fa-times"></i></button>
+        </div>
+        <form [formGroup]="assignmentForm" (ngSubmit)="submitForm()">
+          <div class="form-group">
+            <label>Group*</label>
+            <select formControlName="group">
+              <option value="">Select a group</option>
+              @for (group of groups(); track group.id) {
+                <option [value]="group.id">{{ group.name }}</option>
+              }
+            </select>
+            @if (assignmentForm.get('group')?.invalid && assignmentForm.get('group')?.touched) {
+              <span class="field-error">Group is required</span>
+            }
+          </div>
+          <div class="form-group">
+            <label>Goal*</label>
+            <select formControlName="goal">
+              <option value="">Select a goal</option>
+              @for (goal of goals(); track goal.id) {
+                <option [value]="goal.id">{{ goal.title }} ({{ goal.points }} pts)</option>
+              }
+            </select>
+            @if (assignmentForm.get('goal')?.invalid && assignmentForm.get('goal')?.touched) {
+              <span class="field-error">Goal is required</span>
+            }
+          </div>
+          <div class="form-group checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" formControlName="complete" />
+              <span>Mark as completed</span>
+            </label>
+          </div>
+          <div class="modal-actions">
+            <button type="button" (click)="closeModal()" class="btn-secondary">Cancel</button>
+            <button type="submit" [disabled]="assignmentForm.invalid || saving()" class="btn-primary">
+              @if (saving()) {
+                <span class="spinner-small"></span>
+                Saving...
+              } @else {
+                Assign Goal
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>
