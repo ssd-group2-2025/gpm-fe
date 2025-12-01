@@ -11,4 +11,14 @@ import { AuthService } from '../../services/auth.service';
 })
 export class SettingsComponent {
   authService = inject(AuthService);
+
+  getFirstName(): string {
+    const user = this.authService.currentUser;
+    return user?.firstName || (user as any)?.first_name || '';
+  }
+
+  getLastName(): string {
+    const user = this.authService.currentUser;
+    return user?.lastName || (user as any)?.last_name || '';
+  }
 }

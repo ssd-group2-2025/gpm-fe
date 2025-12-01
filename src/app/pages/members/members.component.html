@@ -20,7 +20,7 @@
         <tbody>
           @for (user of users(); track user.id) {
             <tr>
-              <td>{{ user.firstName }} {{ user.lastName }}</td>
+              <td>{{ getUserFullName(user) }}</td>
               <td>{{ user.username }}</td>
               <td>{{ user.email }}</td>
               <td>{{ user.matricola }}</td>

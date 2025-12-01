@@ -28,7 +28,9 @@ export class MembersComponent implements OnInit {
       groups: this.groupsService.groupsList()
     }).subscribe({
       next: ({ users, groups }) => {
-        this.users.set(users);
+        // Filtra via i superuser
+        const filteredUsers = users.filter(user => !user.isSuperuser);
+        this.users.set(filteredUsers);
         this.groups.set(groups);
         this.loading.set(false);
       }
@@ -38,5 +40,11 @@ export class MembersComponent implements OnInit {
   getGroupName(groupId?: number): string {
     if (!groupId) return 'No Group';
     return this.groups().find(g => g.id === groupId)?.name || 'Unknown';
+  }
+
+  getUserFullName(user: User): string {
+    const firstName = user.firstName || (user as any).first_name || '';
+    const lastName = user.lastName || (user as any).last_name || '';
+    return `${firstName} ${lastName}`.trim();
   }
 }

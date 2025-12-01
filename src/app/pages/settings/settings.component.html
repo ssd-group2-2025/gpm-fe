@@ -11,18 +11,20 @@
         <label>Email:</label>
         <span>{{ authService.currentUser?.email }}</span>
       </div>
-      <div class="info-item">
-        <label>First Name:</label>
-        <span>{{ authService.currentUser?.firstName }}</span>
-      </div>
-      <div class="info-item">
-        <label>Last Name:</label>
-        <span>{{ authService.currentUser?.lastName }}</span>
-      </div>
-      <div class="info-item">
-        <label>Matricola:</label>
-        <span>{{ authService.currentUser?.matricola }}</span>
-      </div>
+      @if (!authService.isAdmin) {
+        <div class="info-item">
+          <label>First Name:</label>
+          <span>{{ getFirstName() }}</span>
+        </div>
+        <div class="info-item">
+          <label>Last Name:</label>
+          <span>{{ getLastName() }}</span>
+        </div>
+        <div class="info-item">
+          <label>Matricola:</label>
+          <span>{{ authService.currentUser?.matricola }}</span>
+        </div>
+      }
       <div class="info-item">
         <label>Role:</label>
         <span class="badge" [class.admin]="authService.isAdmin">
