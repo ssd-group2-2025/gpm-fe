@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import Swal from 'sweetalert2';
+import { ErrorHandlerService } from '../../services/error-handler.service';
 import { TopicsService } from '../../core-client-generated/api/topics.service';
 import { Topic } from '../../core-client-generated/model/models';
 
@@ -40,6 +41,7 @@ export class TopicsComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading topics:', error);
+        ErrorHandlerService.handleValidationError(error, 'Failed to load topics.');
         this.loading.set(false);
       }
     });
@@ -77,6 +79,7 @@ export class TopicsComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error updating topic:', error);
+          ErrorHandlerService.handleValidationError(error, 'Failed to update the topic.');
           this.saving.set(false);
         }
       });
@@ -89,6 +92,7 @@ export class TopicsComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error creating topic:', error);
+          ErrorHandlerService.handleValidationError(error, 'Failed to create the topic.');
           this.saving.set(false);
         }
       });
@@ -114,7 +118,7 @@ export class TopicsComponent implements OnInit {
           },
           error: (error) => {
             console.error('Error deleting topic:', error);
-            Swal.fire('Error', 'Failed to delete the topic.', 'error');
+            ErrorHandlerService.handleValidationError(error, 'Failed to delete the topic.');
           }
         });
       }

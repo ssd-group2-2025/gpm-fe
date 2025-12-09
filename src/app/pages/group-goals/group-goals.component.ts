@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import Swal from 'sweetalert2';
+import { ErrorHandlerService } from '../../services/error-handler.service';
 import { GroupGoalsService } from '../../core-client-generated/api/groupGoals.service';
 import { GroupsService } from '../../core-client-generated/api/groups.service';
 import { GoalsService } from '../../core-client-generated/api/goals.service';
@@ -68,6 +69,7 @@ export class GroupGoalsComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading data:', error);
+        ErrorHandlerService.handleValidationError(error, 'Failed to load assignments.');
         this.loading.set(false);
       }
     });
@@ -95,6 +97,7 @@ export class GroupGoalsComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error creating assignment:', error);
+        ErrorHandlerService.handleValidationError(error, 'Failed to create the assignment.');
         this.saving.set(false);
       }
     });
@@ -104,7 +107,10 @@ export class GroupGoalsComponent implements OnInit {
     const updated = { ...gg, complete: !gg.complete };
     this.groupGoalsService.groupGoalsPartialUpdate(updated, gg.id!).subscribe({
       next: () => this.loadData(),
-      error: (error) => console.error('Error toggling completion:', error)
+      error: (error) => {
+        console.error('Error toggling completion:', error);
+        ErrorHandlerService.handleValidationError(error, 'Failed to toggle completion status.');
+      }
     });
   }
 
@@ -127,7 +133,7 @@ export class GroupGoalsComponent implements OnInit {
           },
           error: (error) => {
             console.error('Error deleting assignment:', error);
-            Swal.fire('Error', 'Failed to delete the assignment.', 'error');
+            ErrorHandlerService.handleValidationError(error, 'Failed to delete the assignment.');
           }
         });
       }

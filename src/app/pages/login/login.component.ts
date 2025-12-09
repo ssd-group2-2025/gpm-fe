@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ErrorHandlerService } from '../../services/error-handler.service';
 
 @Component({
   selector: 'app-login',
@@ -51,8 +52,8 @@ export class LoginComponent {
       },
       error: (error) => {
         this.loading.set(false);
-        this.errorMessage.set('Invalid username or password. Please try again.');
         console.error('Login error:', error);
+        ErrorHandlerService.handleValidationError(error, 'Invalid username or password. Please try again.');
       }
     });
   }

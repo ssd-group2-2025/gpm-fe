@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import Swal from 'sweetalert2';
+import { ErrorHandlerService } from '../../services/error-handler.service';
 import { GoalsService } from '../../core-client-generated/api/goals.service';
 import { Goal } from '../../core-client-generated/model/models';
 
@@ -42,6 +43,7 @@ export class GoalsComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading goals:', error);
+        ErrorHandlerService.handleValidationError(error, 'Failed to load goals.');
         this.loading.set(false);
       }
     });
@@ -79,6 +81,7 @@ export class GoalsComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error updating goal:', error);
+          ErrorHandlerService.handleValidationError(error, 'Failed to update the goal.');
           this.saving.set(false);
         }
       });
@@ -91,6 +94,7 @@ export class GoalsComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error creating goal:', error);
+          ErrorHandlerService.handleValidationError(error, 'Failed to create the goal.');
           this.saving.set(false);
         }
       });
@@ -116,7 +120,7 @@ export class GoalsComponent implements OnInit {
           },
           error: (error) => {
             console.error('Error deleting goal:', error);
-            Swal.fire('Error', 'Failed to delete the goal.', 'error');
+            ErrorHandlerService.handleValidationError(error, 'Failed to delete the goal.');
           }
         });
       }

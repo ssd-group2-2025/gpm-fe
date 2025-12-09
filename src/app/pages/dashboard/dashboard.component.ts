@@ -7,6 +7,7 @@ import { GoalsService } from '../../core-client-generated/api/goals.service';
 import { GroupGoalsService } from '../../core-client-generated/api/groupGoals.service';
 import { Group, User, Goal, GroupGoals } from '../../core-client-generated/model/models';
 import { forkJoin } from 'rxjs';
+import { ErrorHandlerService } from '../../services/error-handler.service';
 
 interface DashboardStats {
   totalGroups: number;
@@ -70,6 +71,7 @@ export class DashboardComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading dashboard data:', error);
+        ErrorHandlerService.handleValidationError(error, 'Failed to load dashboard data.');
         this.loading.set(false);
       }
     });

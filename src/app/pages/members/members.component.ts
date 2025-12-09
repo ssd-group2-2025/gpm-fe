@@ -7,6 +7,7 @@ import { GroupUsersService } from '../../core-client-generated/api/groupUsers.se
 import { Group, UserGroup } from '../../core-client-generated/model/models';
 import { ExtendedUser } from '../../models/extended-user.model';
 import { forkJoin } from 'rxjs';
+import { ErrorHandlerService } from '../../services/error-handler.service';
 
 @Component({
   selector: 'app-members',
@@ -38,6 +39,11 @@ export class MembersComponent implements OnInit {
         this.users.set(filteredUsers);
         this.groups.set(groups);
         this.userGroups.set(userGroups);
+        this.loading.set(false);
+      },
+      error: (error) => {
+        console.error('Error loading members data:', error);
+        ErrorHandlerService.handleValidationError(error, 'Failed to load members data.');
         this.loading.set(false);
       }
     });

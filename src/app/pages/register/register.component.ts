@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService as ApiAuthService } from '../../core-client-generated/api/auth.service';
+import { ErrorHandlerService } from '../../services/error-handler.service';
 
 @Component({
   selector: 'app-register',
@@ -66,23 +67,7 @@ export class RegisterComponent {
       error: (error) => {
         this.loading.set(false);
         console.error('Registration error:', error);
-
-        if (error.error) {
-          const errors = error.error;
-          const errorMessages: string[] = [];
-
-          Object.keys(errors).forEach(key => {
-            if (Array.isArray(errors[key])) {
-              errorMessages.push(...errors[key]);
-            } else {
-              errorMessages.push(errors[key]);
-            }
-          });
-
-          this.errorMessage.set(errorMessages.join(' '));
-        } else {
-          this.errorMessage.set('Registration failed. Please try again.');
-        }
+        ErrorHandlerService.handleValidationError(error, 'Registration failed. Please try again.');
       }
     });
   }

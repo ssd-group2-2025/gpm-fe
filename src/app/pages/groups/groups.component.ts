@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import Swal from 'sweetalert2';
+import { ErrorHandlerService } from '../../services/error-handler.service';
 import { GroupsService } from '../../core-client-generated/api/groups.service';
 import { GroupUsersService } from '../../core-client-generated/api/groupUsers.service';
 import { TopicsService } from '../../core-client-generated/api/topics.service';
@@ -99,6 +100,7 @@ export class GroupsComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading data:', error);
+        ErrorHandlerService.handleValidationError(error, 'Failed to load groups data.');
         this.loading.set(false);
       }
     });
@@ -164,6 +166,7 @@ export class GroupsComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error updating group:', error);
+          ErrorHandlerService.handleValidationError(error, 'Failed to update the group.');
           this.saving.set(false);
         }
       });
@@ -188,6 +191,7 @@ export class GroupsComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error creating group:', error);
+          ErrorHandlerService.handleValidationError(error, 'Failed to create the group.');
           this.saving.set(false);
         }
       });
@@ -246,7 +250,10 @@ export class GroupsComponent implements OnInit {
         // Ricarica i dati per aggiornare lo stato isMyGroup
         setTimeout(() => this.loadData(), 200);
       },
-      error: (error) => console.error('Error joining group:', error)
+      error: (error) => {
+        console.error('Error joining group:', error);
+        ErrorHandlerService.handleValidationError(error, 'Failed to join the group.');
+      }
     });
   }
 
@@ -272,7 +279,7 @@ export class GroupsComponent implements OnInit {
           },
           error: (error) => {
             console.error('Error leaving group:', error);
-            Swal.fire('Error', 'Failed to leave the group.', 'error');
+            ErrorHandlerService.handleValidationError(error, 'Failed to leave the group.');
           }
         });
       }
@@ -298,7 +305,7 @@ export class GroupsComponent implements OnInit {
           },
           error: (error) => {
             console.error('Error deleting group:', error);
-            Swal.fire('Error', 'Failed to delete the group.', 'error');
+            ErrorHandlerService.handleValidationError(error, 'Failed to delete the group.');
           }
         });
       }
