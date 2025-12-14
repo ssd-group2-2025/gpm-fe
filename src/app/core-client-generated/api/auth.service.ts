@@ -173,13 +173,14 @@ export class AuthService {
     /**
      * Calls Django logout method and delete the Token object assigned to the current User object.
      * Accepts/Returns nothing.
+     * @param body 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public authLogoutLogoutCreate(observe?: 'body', reportProgress?: boolean): Observable<any>;
-    public authLogoutLogoutCreate(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
-    public authLogoutLogoutCreate(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
-    public authLogoutLogoutCreate(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public authLogoutLogoutCreate(body?: any, observe?: 'body', reportProgress?: boolean): Observable<any>;
+    public authLogoutLogoutCreate(body?: any, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
+    public authLogoutLogoutCreate(body?: any, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
+    public authLogoutLogoutCreate(body?: any, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         let headers = this.defaultHeaders;
 
@@ -198,10 +199,16 @@ export class AuthService {
 
         // to determine the Content-Type header
         const consumes: string[] = [
+            'application/json'
         ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
 
-        return this.httpClient.request<any>('post',`${this.basePath}/auth/logout/logout/`,
+        return this.httpClient.request<any>('post',`${this.basePath}/auth/logout/`,
             {
+                body: body,
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
                 observe: observe,
@@ -240,7 +247,7 @@ export class AuthService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<any>('get',`${this.basePath}/auth/logout/logout/`,
+        return this.httpClient.request<any>('get',`${this.basePath}/auth/logout/`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
